@@ -1,19 +1,5 @@
-use futures::executor::block_on;
-use sea_orm::*;
-use sea_orm_migration::prelude::*;
-use dotenv::dotenv;
-use std::env;
-use entities::{prelude::*, *};
-
-use crate::migrator::Migrator;
-
-mod migrator;
-mod entities;
-
 fn main() {
-    if let Err(err) = block_on(run()) {
-        panic!("{}", err);
-    }
+    icepocha_api::main();
 }
 
 async fn run() -> Result<(), DbErr> {
@@ -31,9 +17,7 @@ async fn run() -> Result<(), DbErr> {
     let url = format!("{}/{}", database_url, database_name);
     let db = Database::connect(&url).await?;
 
-    //let schema_manager = SchemaManager::new(&db);
     Migrator::refresh(&db).await?;
 
-    
     Ok(())
 }
