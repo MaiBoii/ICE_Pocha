@@ -1,4 +1,4 @@
-use sea_orm_migration::prelude::*;
+pub use sea_orm_migration::prelude::*;
 
 mod m_20230917_000001_create_menu_table;
 mod m_20230917_000002_create_order_table;

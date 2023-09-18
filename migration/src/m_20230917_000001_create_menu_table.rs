@@ -1,13 +1,6 @@
-#![allow(unused)]
 use sea_orm_migration::prelude::*;
-
+#[derive(DeriveMigrationName)]
 pub struct Migration;
-
-impl MigrationName for Migration {
-    fn name(&self) -> &str {
-        "m_20230917_000001_create_menu_table"
-    }
-}
 
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
@@ -27,7 +20,21 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Menu::price).integer().not_null())
                     .to_owned(),
             )
-            .await
+            .await?;
+
+            let insert = Query::insert()
+            .into_table(Menu::Table)
+            .columns([Menu::name, Menu::price])
+            .values_panic(["마라탕".into(), 10000.into()])
+            .values_panic(["탕후루".into(), 230000.into()])
+            .values_panic(["양장피".into(), 123000.into()])
+            .values_panic(["마라샹궈".into(), 32000.into()])
+            .values_panic(["한우 오마카세".into(), 132000.into()])
+            .to_owned();
+
+        manager.exec_stmt(insert).await?;
+
+        Ok(())
     }
 
     // 오류발생시 어떻게 롤백할지 정의: Drop the Menu table.

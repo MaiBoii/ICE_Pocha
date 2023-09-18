@@ -3,14 +3,9 @@ use sea_orm_migration::prelude::*;
 
 use super::m_20230917_000001_create_menu_table::Menu;
 use super::m_20230917_000002_create_order_table::Order;
-
+#[derive(DeriveMigrationName)]
 pub struct Migration;
 
-impl MigrationName for Migration {
-    fn name(&self) -> &str {
-        "m_20230917_000003_create_orders_detail_table"
-    }
-}
 
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {

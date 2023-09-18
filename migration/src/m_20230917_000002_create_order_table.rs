@@ -1,12 +1,7 @@
 #![allow(unused)]
 use sea_orm_migration::prelude::*;
+#[derive(DeriveMigrationName)]
 pub struct Migration;
-
-impl MigrationName for Migration {
-    fn name(&self) -> &str {
-        "m_20230917_000002_create_order_table"
-    }
-}
 
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {

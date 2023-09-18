@@ -14,3 +14,13 @@ features = [
     "runtime-tokio-native-tls",
     "sqlx-mysql",
 ]
+
+[dev-dependencies]
+tokio = { version = "1.20.0", features = ["macros", "rt"] }
+
+[features]
+mock = ["sea-orm/mock"]
+
+[[test]]
+name = "mock"
+required-features = ["mock"]
