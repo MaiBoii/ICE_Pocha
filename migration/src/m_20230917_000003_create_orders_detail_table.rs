@@ -15,28 +15,28 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(OrdersDetail::Table)
                     .col(
-                        ColumnDef::new(OrdersDetail::order_details_id)
+                        ColumnDef::new(OrdersDetail::OrderDetailsId)
                             .integer()
                             .not_null()
                             .auto_increment()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(OrdersDetail::order_id).integer().not_null())
-                    .col(ColumnDef::new(OrdersDetail::menu_id).integer().not_null())
-                    .col(ColumnDef::new(OrdersDetail::quantity).integer().not_null())
-                    .col(ColumnDef::new(OrdersDetail::price).integer().not_null())
-                    .col(ColumnDef::new(OrdersDetail::requests).string())
+                    .col(ColumnDef::new(OrdersDetail::OrderId).integer().not_null())
+                    .col(ColumnDef::new(OrdersDetail::MenuId).integer().not_null())
+                    .col(ColumnDef::new(OrdersDetail::Quantity).integer().not_null())
+                    .col(ColumnDef::new(OrdersDetail::Price).integer().not_null())
+                    .col(ColumnDef::new(OrdersDetail::Requests).string())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-OrdersDetail-menu_id")
-                            .from(OrdersDetail::Table, OrdersDetail::menu_id)
-                            .to(Menu::Table, Menu::menu_id),
+                            .from(OrdersDetail::Table, OrdersDetail::MenuId)
+                            .to(Menu::Table, Menu::MenuId),
                     )
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-OrdersDetail-order_id")
-                            .from(OrdersDetail::Table, OrdersDetail::order_id)
-                            .to(Order::Table, Order::order_id),
+                            .from(OrdersDetail::Table, OrdersDetail::OrderId)
+                            .to(Order::Table, Order::OrderId),
                     )
                     .to_owned(),
             )
@@ -53,10 +53,10 @@ impl MigrationTrait for Migration {
 #[derive(Iden)]
 pub enum OrdersDetail {
     Table,
-    order_details_id,
-    order_id,
-    menu_id,
-    quantity,
-    price,
-    requests,
+    OrderDetailsId,
+    OrderId,
+    MenuId,
+    Quantity,
+    Price,
+    Requests,
 }

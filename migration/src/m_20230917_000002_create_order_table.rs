@@ -11,15 +11,15 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Order::Table)
                     .col(
-                        ColumnDef::new(Order::order_id)
+                        ColumnDef::new(Order::OrderId)
                             .integer()
                             .not_null()
                             .auto_increment()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Order::tables_id).integer().not_null())
-                    .col(ColumnDef::new(Order::ordered_at).date_time().not_null())
-                    .col(ColumnDef::new(Order::total_price).integer().not_null())
+                    .col(ColumnDef::new(Order::TablesId).integer().not_null())
+                    .col(ColumnDef::new(Order::OrderedAt).date_time().not_null())
+                    .col(ColumnDef::new(Order::TotalPrice).integer().not_null())
                     .to_owned(),
             )
             .await
@@ -35,8 +35,8 @@ impl MigrationTrait for Migration {
 #[derive(Iden)]
 pub enum Order {
     Table,
-    order_id,
-    tables_id,
-    ordered_at,
-    total_price,
+    OrderId,
+    TablesId,
+    OrderedAt,
+    TotalPrice,
 }

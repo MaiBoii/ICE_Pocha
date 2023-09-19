@@ -19,3 +19,13 @@ serde_json = "1.0.102"
 tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }
 entity = { path = "../entity" }
 migration = { path = "../migration" }
+chron = "0.1.2"
+chrono = "0.4.31"
+
+[dependencies.sea-orm]
+version = "0.12.2" # sea-orm version
+features = [
+    "debug-print",
+    "runtime-tokio-native-tls",
+    "sqlx-mysql",
+]
