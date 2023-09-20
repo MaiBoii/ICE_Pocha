@@ -9,7 +9,6 @@ pub struct Model {
     pub order_id: i32,
     pub tables_id: String,
     pub ordered_at: DateTime,
-    pub total_price: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

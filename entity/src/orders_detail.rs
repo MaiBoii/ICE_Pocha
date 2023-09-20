@@ -11,7 +11,6 @@ pub struct Model {
     pub menu_id: i32,
     pub quantity: i32,
     pub price: i32,
-    pub requests: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

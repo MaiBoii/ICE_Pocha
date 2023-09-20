@@ -13,15 +13,13 @@ pub struct OrderStruct {
     pub order_id: i32,
     pub table_id: String,
     pub ordered_at: NaiveDateTime,
-    pub total_amount: i32,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct OrdersDetailStruct {
-    ordersdetail_id: i32,
-    order_id: i32,
-    menu_id: i32,
-    quantity: i32,
-    price: i32,
-    requests: String,
+    pub ordersdetail_id: i32,
+    pub order_id: i32,
+    pub menu_id: i32,
+    pub quantity: i32,
+    pub price: i32,
 }

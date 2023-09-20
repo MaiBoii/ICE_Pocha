@@ -6,11 +6,11 @@ use icepocha_service::sea_orm::{Database,DatabaseConnection};
 use serde::Deserialize;
 use entity::*;
 use migration::{Migrator, MigratorTrait, Table};
-use models::{MenuStruct, OrderStruct};
-use sea_orm::{EntityTrait, Set, ActiveModelTrait};
+use models::{MenuStruct, OrdersDetailStruct};
+use sea_orm::{EntityTrait, Set, ActiveModelTrait, Order};
 use std::str::FromStr;
 use std::{env, net::SocketAddr};
-use chrono::{Utc};
+use chrono::Utc;
 
 mod models;
 
@@ -29,14 +29,14 @@ async fn start() -> anyhow::Result<()> {
         .await
         .expect("Database connection failed");
 
-    Migrator::refresh(&conn).await?;
+    Migrator::fresh(&conn).await?;
 
     let state = ConnState {conn };
 
     let app = Router::new()
     .route("/", get(root))
-    .route("/menu", get(show_menus))
-    .route("/menu/:table_id", post(ordering))
+    .route("/menu", get(show_menus).post(ordering))
+    //.route("/order", post(send_orders_detail))
     .with_state(state);
 
     let addr = SocketAddr::from_str(&server_url).unwrap();
@@ -71,18 +71,50 @@ async fn show_menus(state: State<ConnState>) -> impl IntoResponse {
     (StatusCode::ACCEPTED,Json(menus))
 }
 
-//주문 넣기
-async fn ordering(Query(params):Query<TableParams>, state: State<ConnState>, Json(order): Json<OrderStruct>) -> impl IntoResponse {
+//주문 정보 생성
+async fn ordering(Query(params):Query<TableParams>, 
+                state: State<ConnState>, 
+            ) 
+    -> impl IntoResponse {
     let table_id = params.table_id.as_deref().unwrap();
     let order_model = order::ActiveModel {
         tables_id: Set(table_id.to_owned()),
         ordered_at: Set(Utc::now().naive_utc()),
-        total_price: Set(order.total_amount.to_owned()),
         ..Default::default()
     };
     order_model.insert(&state.conn).await.unwrap();
-    (StatusCode::ACCEPTED, "주문이 완료되었습니다.")
+    (StatusCode::ACCEPTED, "주문 정보가 생성되었습니다.")
 }
+
+// //OrdersDetail 정보 생성
+// async fn send_orders_detail(
+//         Query(params):Query<TableParams>, 
+//         state: State<ConnState>, 
+//         Json(orders_detail):Json<OrdersDetailStruct>
+//     ) 
+//     -> impl IntoResponse {
+    
+//     let table_id = params.table_id.as_deref().unwrap();
+//     let order_model = order::ActiveModel {
+//         tables_id: Set(table_id.to_owned()),
+//         ordered_at: Set(Utc::now().naive_utc()),
+//         ..Default::default()
+//     };
+
+//     let add_order = order_model.insert(&state.conn).await.unwrap();
+
+//     let orders_detail_model = orders_detail::ActiveModel {
+//         order_id: Set(add_order.order_id.to_owned()),
+//         menu_id: Set(.menu_id.to_owned()),
+//         quantity: Set(orders_detail.quantity.to_owned()),
+//         //price = quantity * menu.price
+//         price: Set(),
+//         requests: Set(orders_detail.requests.to_owned()),
+//         ..Default::default()
+//     };
+//     orders_detail_model.insert(&state.conn).await.unwrap();
+//     (StatusCode::ACCEPTED, "주문이 완료되었습니다.")
+// }
 
 pub fn main() {
     let result = start();

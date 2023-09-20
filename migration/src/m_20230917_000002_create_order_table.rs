@@ -17,9 +17,8 @@ impl MigrationTrait for Migration {
                             .auto_increment()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Order::TablesId).integer().not_null())
+                    .col(ColumnDef::new(Order::TablesId).string().not_null())
                     .col(ColumnDef::new(Order::OrderedAt).date_time().not_null())
-                    .col(ColumnDef::new(Order::TotalPrice).integer().not_null())
                     .to_owned(),
             )
             .await
@@ -38,5 +37,4 @@ pub enum Order {
     OrderId,
     TablesId,
     OrderedAt,
-    TotalPrice,
 }

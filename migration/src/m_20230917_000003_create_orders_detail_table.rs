@@ -25,7 +25,6 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(OrdersDetail::MenuId).integer().not_null())
                     .col(ColumnDef::new(OrdersDetail::Quantity).integer().not_null())
                     .col(ColumnDef::new(OrdersDetail::Price).integer().not_null())
-                    .col(ColumnDef::new(OrdersDetail::Requests).string())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-OrdersDetail-menu_id")
@@ -58,5 +57,4 @@ pub enum OrdersDetail {
     MenuId,
     Quantity,
     Price,
-    Requests,
 }
