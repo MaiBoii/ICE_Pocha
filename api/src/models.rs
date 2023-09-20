@@ -8,18 +8,21 @@ pub struct MenuStruct {
     pub price: i32,
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct OrderStruct {
-    pub order_id: i32,
+#[derive(Serialize, Deserialize, Clone)]
+pub struct CreateOrderModel {
     pub table_id: String,
     pub ordered_at: NaiveDateTime,
 }
 
+#[derive(Serialize,Deserialize)]
+pub struct CreateModel{
+    pub name: String,
+    pub email: String,
+    pub password: String 
+}
+
 #[derive(Serialize, Deserialize)]
-pub struct OrdersDetailStruct {
-    pub ordersdetail_id: i32,
-    pub order_id: i32,
+pub struct SendOrdersDetailModel {
     pub menu_id: i32,
     pub quantity: i32,
-    pub price: i32,
 }

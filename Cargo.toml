@@ -8,3 +8,4 @@ members = [".", "api", "service", "entity", "migration"]
 
 [dependencies]
 icepocha-api = { path = "api" }
+uuid = "1.4.1"

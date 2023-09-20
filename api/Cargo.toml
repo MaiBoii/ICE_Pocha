@@ -21,6 +21,7 @@ entity = { path = "../entity" }
 migration = { path = "../migration" }
 chron = "0.1.2"
 chrono = "0.4.31"
+uuid = { version = "1.4.1", features = ["v4"] }
 
 [dependencies.sea-orm]
 version = "0.12.2" # sea-orm version
