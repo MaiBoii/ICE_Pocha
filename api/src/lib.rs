@@ -7,7 +7,7 @@ use serde::Deserialize;
 use entity::*;
 use migration::{Migrator, MigratorTrait};
 use models::{MenuStruct, SendOrdersDetailModel};
-use sea_orm::{EntityTrait, Set, ActiveModelTrait, QuerySelect, ColumnTrait, QueryFilter};
+use sea_orm::{EntityTrait, Set, ActiveModelTrait, ColumnTrait, QueryFilter};
 use uuid::Uuid;
 use std::str::FromStr;
 use std::{env, net::SocketAddr};
@@ -67,6 +67,7 @@ async fn show_menus(state: State<ConnState>) -> impl IntoResponse {
         menu_id: item.menu_id,
         name: item.name.to_owned(),
         price: item.price,
+        togo: item.togo,
     }).collect();
     
     (StatusCode::ACCEPTED,Json(menus))
@@ -124,7 +125,6 @@ async fn send_orders_detail(
         .order_id;
 
     //추가된 order 정보를 담는다
-
     let orders_detail_model = orders_detail::ActiveModel {
         order_id: Set(order_id.to_owned()),
         menu_id: Set(orders_detail.menu_id.to_owned()),

@@ -18,19 +18,20 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(Menu::Name).string().not_null())
                     .col(ColumnDef::new(Menu::Price).integer().not_null())
+                    .col(ColumnDef::new(Menu::Togo).boolean().default(true).not_null())
                     .to_owned(),
             )
             .await?;
 
             let insert = Query::insert()
             .into_table(Menu::Table)
-            .columns([Menu::Name, Menu::Price])
-            .values_panic(["마라탕".into(), 10000.into()])
-            .values_panic(["탕후루".into(), 230000.into()])
-            .values_panic(["양장피".into(), 123000.into()])
-            .values_panic(["마라샹궈".into(), 32000.into()])
-            .values_panic(["한우 오마카세".into(), 132000.into()])
-            .values_panic(["취두부".into(), 170000.into()])
+            .columns([Menu::Name, Menu::Price, Menu::Togo])
+            .values_panic(["마라탕".into(), 10000.into(),false.into()])
+            .values_panic(["탕후루".into(), 230000.into(),true.into()])
+            .values_panic(["오뎅탕".into(), 123000.into(),false.into()])
+            .values_panic(["마라샹궈".into(), 32000.into(),true.into()])
+            .values_panic(["한우 오마카세".into(), 132000.into(),true.into()])
+            .values_panic(["취두부".into(), 170000.into(),true.into()])
             .to_owned();
 
         manager.exec_stmt(insert).await?;
@@ -52,4 +53,5 @@ pub enum Menu {
     MenuId,
     Name,
     Price,
+    Togo,
 }
