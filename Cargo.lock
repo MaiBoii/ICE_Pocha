@@ -542,12 +542,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
-name = "chron"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ff5e4620702cf5f0f642ac533cc437fa4c48e6f5c4581667d63feeabbf7f2ed0"
-
-[[package]]
 name = "chrono"
 version = "0.4.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1217,7 +1211,6 @@ name = "icepocha"
 version = "0.1.0"
 dependencies = [
  "icepocha-api",
- "uuid",
 ]
 
 [[package]]
@@ -1226,11 +1219,10 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "axum",
- "chron",
  "chrono",
  "dotenvy",
  "entity",
- "icepocha-service",
+ "lazy_static",
  "migration",
  "sea-orm",
  "serde",
@@ -1241,15 +1233,6 @@ dependencies = [
  "tower-http",
  "tracing-subscriber",
  "uuid",
-]
-
-[[package]]
-name = "icepocha-service"
-version = "0.1.0"
-dependencies = [
- "entity",
- "sea-orm",
- "tokio",
 ]
 
 [[package]]

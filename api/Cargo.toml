@@ -6,11 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-icepocha-service = { path = "../service" }
 tokio = { version = "1.29.0", features = ["full"] }
 axum = "0.6.19"
 tower = "0.4.13"
-tower-http = { version = "0.4.3", features = ["fs"] }
+tower-http = { version = "0.4.4", features = ["fs", "cors"] }
 tower-cookies = "0.9.0"
 anyhow = "1.0.71"
 dotenvy = "0.15.7"
@@ -19,9 +18,9 @@ serde_json = "1.0.102"
 tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }
 entity = { path = "../entity" }
 migration = { path = "../migration" }
-chron = "0.1.2"
 chrono = "0.4.31"
 uuid = { version = "1.4.1", features = ["v4"] }
+lazy_static = "1.4.0"
 
 [dependencies.sea-orm]
 version = "0.12.2" # sea-orm version

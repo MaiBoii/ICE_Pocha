@@ -4,8 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [workspace]
-members = [".", "api", "service", "entity", "migration"]
+members = [".", "api" ,"entity", "migration"]
 
 [dependencies]
 icepocha-api = { path = "api" }
-uuid = "1.4.1"
