@@ -1,11 +1,7 @@
 use serde::{Deserialize, Serialize};
-use chrono::NaiveDateTime;
-use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct CreateOrderModel {
-    pub customer_id: Uuid,
-    pub order_time: NaiveDateTime,
     pub order_items: Vec<OrderItemModel>,
 }
 

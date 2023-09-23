@@ -22,7 +22,7 @@ impl MigrationTrait for Migration {
                             .auto_increment()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Order::CustomerId).uuid().not_null().unique_key())
+                    .col(ColumnDef::new(Order::CustomerId).string().not_null().unique_key())
                     .col(ColumnDef::new(Order::TablesId).string().not_null())
                     .col(ColumnDef::new(Order::OrderTime).date_time().not_null())
                     .to_owned(),

@@ -33,6 +33,8 @@ pub async fn order_inmarket_menus(
         ..Default::default()
     };
 
+    println!("{:}", session.get::<uuid::Uuid>("customer_id").unwrap().to_string());
+
     let order_res = order_models.insert(&conn).await.unwrap();
 
     //order_detail 데이터 저장
@@ -40,6 +42,8 @@ pub async fn order_inmarket_menus(
         order_id: ActiveValue::Set(order_res.order_id),
         inmarket_menu_id: ActiveValue::Set(Some(item.menu_id)),
         quantity: ActiveValue::Set(item.quantity),
+        sub_total_price: ActiveValue::Set(0),
+        total_margin: ActiveValue::Set(0),
         ..Default::default()
     }).collect::<Vec<_>>();
 

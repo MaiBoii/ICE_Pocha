@@ -7,7 +7,6 @@ use sea_orm::entity::prelude::*;
 pub struct Model {
     #[sea_orm(primary_key)]
     pub order_id: i32,
-    #[sea_orm(column_type = "Binary(BlobSize::Blob(Some(16)))", unique)]
     pub customer_id: String,
     pub tables_id: String,
     pub order_time: DateTime,
