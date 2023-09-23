@@ -1,7 +1,12 @@
-#![allow(unused)]
 use sea_orm_migration::prelude::*;
-#[derive(DeriveMigrationName)]
+
 pub struct Migration;
+
+impl MigrationName for Migration {
+    fn name(&self) -> &str {
+        "m_20230921_000003_create_order"
+    }
+}
 
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
@@ -19,7 +24,7 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(Order::CustomerId).uuid().not_null().unique_key())
                     .col(ColumnDef::new(Order::TablesId).string().not_null())
-                    .col(ColumnDef::new(Order::OrderedAt).date_time().not_null())
+                    .col(ColumnDef::new(Order::OrderTime).date_time().not_null())
                     .to_owned(),
             )
             .await
@@ -38,5 +43,5 @@ pub enum Order {
     OrderId,
     CustomerId,
     TablesId,
-    OrderedAt,
+    OrderTime,
 }

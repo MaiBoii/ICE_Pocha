@@ -1,11 +1,11 @@
 use axum::{
     Router, Server,Extension
 };
-use serde::Deserialize;
-use migration::{Migrator, MigratorTrait};
+use migration::{Migrator};
 use sea_orm::*;
 use std::str::FromStr;
 use std::{env, net::SocketAddr};
+use sea_orm_migration::prelude::*;
 
 mod models;
 mod routes;
@@ -26,22 +26,19 @@ async fn start() -> anyhow::Result<()> {
 
     let conn = Database::connect(db_url).await.expect("Failed to connect to db");
 
-    Migrator::fresh(&conn).await?;
+    // //새로 고치는 거
+    Migrator::refresh(&conn).await?;
 
-    let app: Router = Router::new()
-    .merge(routes::menu_route::menu_routes())
-    .merge(routes::order_route::order_routes())
-    .layer(Extension(conn));
+    let app: Router = Router::new();
+    // .merge(routes::menu_route::menu_routes())
+    // .merge(routes::order_route::order_routes())
+    // .layer(Extension(conn));
 
+    //IP 연결
     let addr = SocketAddr::from_str(&server_url).unwrap();
     Server::bind(&addr).serve(app.into_make_service()).await?;
 
     Ok(())
-}
-
-#[derive(Debug, Deserialize)]
-pub struct TableParams{
-    table_id: Option<String>
 }
 
 pub fn main() {

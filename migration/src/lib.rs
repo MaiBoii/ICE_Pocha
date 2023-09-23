@@ -1,8 +1,10 @@
-pub use sea_orm_migration::prelude::*;
+use sea_orm_migration::prelude::*;
 
-mod m_20230917_000001_create_menu_table;
-mod m_20230917_000002_create_order_table;
-mod m_20230917_000003_create_orders_detail_table;
+mod m_20230921_000001_create_packaged_menu;
+mod m_20230921_000002_create_inmarket_menu;
+mod m_20230921_000003_create_order;
+mod m_20230921_000004_create_orders_detail;
+mod m_20230921_000005_create_date_margin;
 
 pub struct Migrator;
 
@@ -10,9 +12,11 @@ pub struct Migrator;
 impl MigratorTrait for Migrator {
     fn migrations() -> Vec<Box<dyn MigrationTrait>> {
         vec![
-            Box::new(m_20230917_000001_create_menu_table::Migration),
-            Box::new(m_20230917_000002_create_order_table::Migration),
-            Box::new(m_20230917_000003_create_orders_detail_table::Migration),
+            Box::new(m_20230921_000001_create_packaged_menu::Migration),
+            Box::new(m_20230921_000002_create_inmarket_menu::Migration),
+            Box::new(m_20230921_000003_create_order::Migration),
+            Box::new(m_20230921_000004_create_orders_detail::Migration),
+            Box::new(m_20230921_000005_create_date_margin::Migration),
         ]
     }
 }

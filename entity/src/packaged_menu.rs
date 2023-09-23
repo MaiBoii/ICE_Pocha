@@ -3,14 +3,13 @@
 use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
-#[sea_orm(table_name = "order")]
+#[sea_orm(table_name = "packaged_menu")]
 pub struct Model {
     #[sea_orm(primary_key)]
-    pub order_id: i32,
-    #[sea_orm(column_type = "Binary(BlobSize::Blob(Some(16)))", unique)]
-    pub customer_id: Vec<u8>,
-    pub tables_id: String,
-    pub order_time: DateTime,
+    pub menu_id: i32,
+    pub name: String,
+    pub price: i32,
+    pub profit_margin: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

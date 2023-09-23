@@ -21,6 +21,7 @@ migration = { path = "../migration" }
 chrono = "0.4.31"
 uuid = { version = "1.4.1", features = ["v4"] }
 lazy_static = "1.4.0"
+sea-orm-migration = "0.12.3"
 
 [dependencies.sea-orm]
 version = "0.12.2" # sea-orm version

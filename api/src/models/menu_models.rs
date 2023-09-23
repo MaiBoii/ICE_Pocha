@@ -5,5 +5,5 @@ pub struct MenuStruct {
     pub menu_id: i32,
     pub name: String,
     pub price: i32,
-    pub togo: bool,
 }
+
