@@ -1,77 +1,51 @@
-// use axum::{http::StatusCode, response::IntoResponse, extract::Query, Json, Extension};
-// use chrono::Utc;
-// //use entity::{order, orders_detail, menu};
-// use sea_orm::{ActiveModelTrait, Set, EntityTrait, ColumnTrait, QueryFilter, DatabaseConnection};
-// use serde::Deserialize;
-// use uuid::Uuid;
+use axum::{Extension, response::IntoResponse, http::StatusCode, Json, extract::Query};
+use axum_sessions::extractors::{ReadableSession, WritableSession};
+use chrono::Utc;
+use entity::{order, order_detail};
+use sea_orm::{DatabaseConnection, Set, ActiveModelTrait, ActiveValue};
+//use entity::{order, orders_detail, menu};
+use serde::Deserialize;
+use sea_orm::entity::EntityTrait;
 
-// use crate::models::order_models::SendOrdersDetailModel;
+use crate::models::order_models::CreateOrderModel;
 
+#[derive(Debug, Deserialize)]
+pub struct TableParams{
+    table_id: Option<String>
+}
 
-// #[derive(Debug, Deserialize)]
-// pub struct TableParams{
-//     table_id: Option<String>
-// }
+/* ---------------------------------- 주문하기---------------------------------- */
+pub async fn order_inmarket_menus(
+    Query(params):Query<TableParams>, 
+    mut session: WritableSession,
+    Extension(conn): Extension<DatabaseConnection>,
+    Json(orders_detail):Json<CreateOrderModel>
+) -> impl IntoResponse {
+    let table_id = params.table_id.as_deref().unwrap();
+    //customer_id 세션에 저장
+    session.insert("customer_id", uuid::Uuid::new_v4()).unwrap();
 
-// /* ------------------------------ orders_detail ----------------------------- */
-// //OrdersDetail 정보 생성
-// pub async fn send_orders_detail(
-//     Query(params):Query<TableParams>, 
-//     Extension(conn): Extension<DatabaseConnection>,
-//     Json(orders_detail):Json<SendOrdersDetailModel>
-// ) 
-// -> impl IntoResponse {
+    //order 데이터 저장
+    let order_models = order::ActiveModel{
+        customer_id: ActiveValue::Set(session.get::<uuid::Uuid>("customer_id").unwrap().to_string()),
+        tables_id: ActiveValue::Set(table_id.to_string()),
+        order_time: ActiveValue::Set(Utc::now().naive_utc()),
+        ..Default::default()
+    };
 
-// let table_id = params.table_id.as_deref().unwrap();
+    let order_res = order_models.insert(&conn).await.unwrap();
 
-// //현재 tables_id와 시간 데이터를 담는다
-// let order_model = order::ActiveModel {
-//     tables_id: Set(table_id.to_owned()),
-//     customer_id: Set(Uuid::new_v4()),
-//     ordered_at: Set(Utc::now().naive_utc()),
-//     ..Default::default()
-// };
+    //order_detail 데이터 저장
+    let order_detail_models = orders_detail.order_items.into_iter().map(|item| order_detail::ActiveModel {
+        order_id: ActiveValue::Set(order_res.order_id),
+        inmarket_menu_id: ActiveValue::Set(Some(item.menu_id)),
+        quantity: ActiveValue::Set(item.quantity),
+        ..Default::default()
+    }).collect::<Vec<_>>();
 
-// order_model.insert(&conn).await.unwrap();
+    order_detail::Entity::insert_many(order_detail_models).exec(&conn).await.unwrap();
 
-// //get order_model's order_id
-// let order_id = order::Entity::find()
-//     .filter(order::Column::TablesId.contains(table_id))
-//     .one(&conn)
-//     .await
-//     .unwrap()
-//     .unwrap()
-//     .order_id;
+    (StatusCode::ACCEPTED, "주문이 완료되었습니다.")
+}
 
-// //추가된 order 정보를 담는다
-// let orders_detail_model = orders_detail::ActiveModel {
-//     order_id: Set(order_id.to_owned()),
-//     menu_id: Set(orders_detail.menu_id.to_owned()),
-//     quantity: Set(orders_detail.quantity.to_owned()),
-//     price: Set(0.to_owned()),
-//     ..Default::default()
-// };
-// let add_orders_detail = orders_detail_model.insert(&conn).await.unwrap();
-
-// let menu_price = menu::Entity::find_by_id(add_orders_detail.menu_id)
-//     .one(&conn)
-//     .await
-//     .unwrap()
-//     .unwrap()
-//     .price;
-
-// let update_total_price = orders_detail::ActiveModel {
-//     order_details_id: Set(add_orders_detail.order_details_id),
-//     price: Set(menu_price * add_orders_detail.quantity),
-//     ..Default::default()
-// };
-
-// update_total_price.update(&conn).await.unwrap();
-
-// println!("{} {}", menu_price, add_orders_detail.quantity);
-
-// (StatusCode::ACCEPTED, "주문이 완료되었습니다.")
-// }
-// /* -------------------------------------------------------------------------- */
-
-
+/* -------------------------------------------------------------------------- */

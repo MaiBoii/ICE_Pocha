@@ -1,11 +1,16 @@
 use axum::{
     Router, Server,Extension
 };
-use migration::{Migrator};
+use axum_sessions::{
+    async_session::MemoryStore,
+    SessionLayer,
+};
+use migration::Migrator;
 use sea_orm::*;
 use std::str::FromStr;
 use std::{env, net::SocketAddr};
 use sea_orm_migration::prelude::*;
+use rand::Rng;
 
 mod models;
 mod routes;
@@ -29,10 +34,21 @@ async fn start() -> anyhow::Result<()> {
     // //새로 고치는 거
     Migrator::refresh(&conn).await?;
 
-    let app: Router = Router::new();
-    // .merge(routes::menu_route::menu_routes())
-    // .merge(routes::order_route::order_routes())
-    // .layer(Extension(conn));
+    let store = MemoryStore::new();
+    let mut rng = rand::thread_rng();
+    let mut secret: [u8; 64] = [0; 64];
+
+    for i in 0..64 {
+        secret[i] = rng.gen::<u8>();
+    }
+
+    let session_layer = SessionLayer::new(store, &secret).with_secure(false);
+    
+    let app: Router = Router::new()
+    .merge(routes::menu_route::menu_routes())
+    .merge(routes::order_route::order_routes())
+    .layer(Extension(conn))
+    .layer(session_layer);
 
     //IP 연결
     let addr = SocketAddr::from_str(&server_url).unwrap();
