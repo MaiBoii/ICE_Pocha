@@ -1,9 +1,8 @@
 use axum::{Extension, response::IntoResponse, http::StatusCode, Json, extract::Query};
-use axum_sessions::extractors::{ReadableSession, WritableSession};
+use axum_sessions::extractors::WritableSession;
 use chrono::Utc;
-use entity::{order, order_detail};
-use sea_orm::{DatabaseConnection, Set, ActiveModelTrait, ActiveValue};
-//use entity::{order, orders_detail, menu};
+use entity::{order, order_detail, inmarket_menu};
+use sea_orm::{DatabaseConnection, ActiveModelTrait, ActiveValue, QueryFilter, ColumnTrait, ActiveModelBehavior};
 use serde::Deserialize;
 use sea_orm::entity::EntityTrait;
 
@@ -38,17 +37,52 @@ pub async fn order_inmarket_menus(
     let order_res = order_models.insert(&conn).await.unwrap();
 
     //order_detail 데이터 저장
-    let order_detail_models = orders_detail.order_items.into_iter().map(|item| order_detail::ActiveModel {
-        order_id: ActiveValue::Set(order_res.order_id),
-        inmarket_menu_id: ActiveValue::Set(Some(item.menu_id)),
-        quantity: ActiveValue::Set(item.quantity),
-        sub_total_price: ActiveValue::Set(0),
-        total_margin: ActiveValue::Set(0),
-        ..Default::default()
-    }).collect::<Vec<_>>();
+    // let order_detail_models = orders_detail
+    //                     .order_items
+    //                     .into_iter()
+    //                     .map(|item| {
+    //                             let menu_price = get_menu_price(item.menu_id, &conn).await.unwrap(); // 메뉴 가격을 가져오는 함수
+    //                             let quantity = item.quantity;
+
+    //                             let sub_total_price = menu_price * quantity;
+    //                             let total_margin = calculate_margin(sub_total_price);
+    //                         order_detail::ActiveModel {
+
+    //     order_id: ActiveValue::Set(order_res.order_id),
+    //     inmarket_menu_id: ActiveValue::Set(Some(item.menu_id)),
+    //     quantity: ActiveValue::Set(item.quantity),
+    //     sub_total_price: ActiveValue::Set(0),
+    //     total_margin: ActiveValue::Set(0),
+    //     ..Default::default()
+    //                         }
+    // }).collect::<Vec<_>>();
+
+    let order_detail_models = orders_detail
+    .order_items
+    .into_iter()
+    .map(|item| {
+
+        
+
+
+
+        let quantity = item.quantity;
+
+        let sub_total_price = menu_price * quantity;
+
+        order_detail::ActiveModel {
+            order_id: ActiveValue::Set(order_res.order_id),
+            inmarket_menu_id: ActiveValue::Set(Some(item.menu_id)),
+            quantity: ActiveValue::Set(quantity),
+            sub_total_price: ActiveValue::Set(sub_total_price),
+            total_margin: ActiveValue::Set(0),
+            ..Default::default()
+        }
+    })
+    .collect::<Vec<_>>();
 
     order_detail::Entity::insert_many(order_detail_models).exec(&conn).await.unwrap();
-
+    
     (StatusCode::ACCEPTED, "주문이 완료되었습니다.")
 }
 
