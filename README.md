@@ -1,4 +1,4 @@
-# ICEPOCHA
+# 🧊 ICE_POCHA
 
 The Order Automation System for our University Festival Pub.
 
