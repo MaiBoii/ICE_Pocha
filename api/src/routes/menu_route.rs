@@ -15,3 +15,4 @@ pub fn menu_routes() -> Router {
     .layer(cors);
     router
 }
+

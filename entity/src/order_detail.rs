@@ -1,4 +1,4 @@
-use sea_orm::{entity::prelude::*, prelude::async_trait::async_trait, DeriveEntityModel, RelationDef, DbErr, ConnectionTrait};
+use sea_orm::{entity::prelude::*, prelude::async_trait::async_trait, DeriveEntityModel, RelationDef};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
 #[sea_orm(table_name = "order_detail")]
@@ -60,36 +60,4 @@ impl Related<super::packaged_menu::Entity> for Entity {
     }
 }
 #[async_trait]
-impl ActiveModelBehavior for ActiveModel {
-
-    // async fn after_save<C>(mut model: Model, db: &C, insert: bool) -> Result<Model, DbErr>
-    // where
-    //     C: ConnectionTrait
-    // {
-    //     // find menu price
-    //     let menu_price = match model.inmarket_menu_id {
-    //         Some(inmarket_menu_id) => {
-    //             let inmarket_menu = super::inmarket_menu::Entity::find_by_id(inmarket_menu_id)
-    //                 .one(db)
-    //                 .await
-    //                 .unwrap();
-    //             inmarket_menu.unwrap().price
-    //         }
-    //         None => {
-    //             let inmarket_menu =
-    //                 super::inmarket_menu::Entity::find_by_id(model.inmarket_menu_id.unwrap())
-    //                     .one(db)
-    //                     .await
-    //                     .unwrap();
-    //             inmarket_menu.unwrap().price
-    //         }
-    //     };
-        
-    //     let total_price = menu_price * model.quantity;
-    //     // 모델의 sub_total_price 필드 업데이트
-    //     model.sub_total_price = total_price;
-    //     println!("------------=======-=-== sub_total_price: {}", model.sub_total_price);
-
-    //     Ok(model) // 모델 업데이트 후 반환
-    // }
-}
+impl ActiveModelBehavior for ActiveModel {}
