@@ -1,7 +1,7 @@
 use axum::{Extension, response::IntoResponse, http::StatusCode, Json, extract::Query};
 use axum_sessions::extractors::WritableSession;
 use chrono::Utc;
-use entity::{order, order_detail::{self, Model}, inmarket_menu};
+use entity::{order, order_detail::{self, Model}, inmarket_menu, date_margin};
 use sea_orm::{DatabaseConnection, ActiveModelTrait, ActiveValue,DbErr, QueryFilter, ColumnTrait, Set};
 use serde::Deserialize;
 use sea_orm::entity::EntityTrait;
@@ -179,15 +179,42 @@ pub async fn payment_complete(
     session.remove("customer_id");
     println!("세션이 만료되었습니다.");
 }
-    
-
 /* -------------------------------------------------------------------------- */
 
 
+/* -------------------------------- 매출 정리 함수 -------------------------------- */
+pub async fn shop_closing(
+    Extension(conn): Extension<DatabaseConnection>,
+) -> impl IntoResponse {
+    // 매장 영업 종료 시, 매출 정리 함수
+    //find all order_details where completed = 1
+    let order_detail_id = order_detail::Entity::find()
+        .filter(order_detail::Column::Completed.contains("1"))
+        .all(&conn)
+        .await
+        .unwrap()
+        .into_iter()
+        .map(|item| item.order_detail_id)
+        .collect::<Vec<i32>>();
+    //sum of total_margin
+    let mut _total_margin = 0;
+    for id in order_detail_id {
+        let order_detail = order_detail::Entity::find_by_id(id)
+            .one(&conn)
+            .await
+            .unwrap()
+            .unwrap();
+        _total_margin += order_detail.total_margin;
+    }
 
-/* -------------------------------- 일자 변경 함수 -------------------------------- */
-// fn shop_closing() -> impl IntoResponse {
-//     (StatusCode::ACCEPTED, "일자가 변경되었습니다.")
-// }
+    let todays_margin = date_margin::ActiveModel {
+        profit_margin: Set(_total_margin.to_owned()),
+        ..Default::default()
+    };
+
+    let _ = todays_margin.insert(&conn).await;
+
+    (StatusCode::ACCEPTED, "일자가 변경되었습니다.")
+}
 
 /* -------------------------------------------------------------------------- */
