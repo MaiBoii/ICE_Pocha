@@ -12,6 +12,6 @@ The Order Automation System for our University Festival Pub.
 - [x] Calculate the total price and margin by menu_id and quantity
 - [x] Discern the customer with session cookie
 - [x] Destroy the session cookie when customer payed and left and complete the order_detail
-- [ ] Separate the date of order_detail when staff Closed the order and save the day's margin
+- [x] Separate the date of order_detail when staff Closed the order and save the day's margin
 - [ ] Real-time order and confirmation notifications using the WebSocket protocol
 
