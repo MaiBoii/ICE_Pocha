@@ -8,3 +8,7 @@ members = [".", "api" ,"entity", "migration"]
 
 [dependencies]
 icepocha-api = { path = "api" }
+
+[profile.release]
+lto = true
+panic = "abort"

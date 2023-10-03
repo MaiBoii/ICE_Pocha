@@ -1,7 +1,7 @@
 use axum::{Extension, response::IntoResponse, http::StatusCode, Json, extract::Query};
 use axum_sessions::extractors::WritableSession;
 use chrono::Utc;
-use entity::{order, order_detail::{self, Model}, inmarket_menu, date_margin};
+use entity::{order, order_detail, inmarket_menu, packaged_menu, date_margin};
 use sea_orm::{DatabaseConnection, ActiveModelTrait, ActiveValue,DbErr, QueryFilter, ColumnTrait, Set};
 use serde::Deserialize;
 use sea_orm::entity::EntityTrait;
@@ -104,7 +104,7 @@ pub async fn order_packaged_menus(
 
     // get_menu_price_margin 함수 정의
     async fn get_menu_price_margin(menu_id: i32, conn: &DatabaseConnection) -> Result<(i32,i32), DbErr> {
-        let menu_price = inmarket_menu::Entity::find_by_id(menu_id)
+        let menu_price = packaged_menu::Entity::find_by_id(menu_id)
             .one(conn)
             .await
             .unwrap()
