@@ -13,5 +13,6 @@ The Order Automation System for our University Festival Pub.
 - [x] Discern the customer with session cookie
 - [x] Destroy the session cookie when customer payed and left and complete the order_detail
 - [x] Separate the date of order_detail when staff Closed the order and save the day's margin
+- [ ] Login Authentication to access to admin page
 - [ ] Real-time order and confirmation notifications using the WebSocket protocol
-
+- [ ] Table management
