@@ -32,10 +32,17 @@ impl MigrationTrait for Migration {
             let insert = Query::insert()
             .into_table(PackagedMenu::Table)
             .columns([PackagedMenu::Name, PackagedMenu::Price, PackagedMenu::ProfitMargin])
-            .values_panic(["탕후루".into(), 230000.into(),5000.into()])
-            .values_panic(["마라샹궈".into(), 32000.into(),23000.into()])
-            .values_panic(["한우 오마카세".into(), 132000.into(),100000.into()])
-            .values_panic(["취두부".into(), 170000.into(),50000000.into()])
+            .values_panic(["대패숙주볶음".into(), 17000.into(),3000.into()])
+            .values_panic(["삼겹비빔면".into(), 10000.into(),5000.into()])
+            .values_panic(["오뎅탕".into(), 14000.into(),30000.into()])
+            .values_panic(["간장비빔국수".into(), 10000.into(),23000.into()])
+            .values_panic(["콩불_소".into(), 15000.into(),100000.into()])
+            .values_panic(["콩불_중".into(), 21000.into(),100000.into()])
+            .values_panic(["감튀+해쉬브라운+버팔로윙".into(), 14000.into(),100000.into()])
+            .values_panic(["소세지".into(), 10000.into(),50000000.into()])
+            .values_panic(["펩시 뚱캔".into(), 2000.into(),50000000.into()])
+            .values_panic(["칠성 뚱캔".into(), 2000.into(),50000000.into()])
+            .values_panic(["물 500ml".into(), 1000.into(),50000000.into()])
             .to_owned();
 
         manager.exec_stmt(insert).await?;

@@ -1,13 +1,8 @@
 use axum::{Extension, response::IntoResponse, http::StatusCode, Json, extract::Query};
-use axum_sessions::{
-    async_session::MemoryStore,
-    extractors::{ReadableSession, WritableSession},
-    SessionLayer,
-};
+use axum_sessions::extractors::WritableSession;
 use chrono::Utc;
-use rand::Rng;
 use entity::{order, order_detail, inmarket_menu, packaged_menu};
-use sea_orm::{DatabaseConnection, ActiveModelTrait, ActiveValue,DbErr, QueryFilter, ColumnTrait, Set};
+use sea_orm::{DatabaseConnection, ActiveModelTrait, ActiveValue,DbErr};
 use serde::Deserialize;
 use sea_orm::entity::EntityTrait;
 

@@ -7,6 +7,7 @@ use axum_sessions::{
 };
 use migration::Migrator;
 use sea_orm::*;
+use tower_http::cors::{CorsLayer, Any};
 use std::str::FromStr;
 use std::{env, net::SocketAddr};
 use sea_orm_migration::prelude::*;
@@ -34,6 +35,10 @@ async fn start() -> anyhow::Result<()> {
     // //새로 고치는 거
     Migrator::refresh(&conn).await?;
 
+    let cors = CorsLayer::new()
+        .allow_methods(Any)
+        .allow_origin(Any);
+    
     let store = MemoryStore::new();
     let mut rng = rand::thread_rng();
     let mut secret: [u8; 64] = [0; 64];
@@ -47,6 +52,8 @@ async fn start() -> anyhow::Result<()> {
     let app: Router = Router::new()
     .merge(routes::menu_route::menu_routes())
     .merge(routes::order_route::order_routes())
+    .merge(routes::admin_route::admin_routes())
+    .layer(cors)
     .layer(Extension(conn))
     .layer(session_layer);
 
