@@ -23,9 +23,7 @@ pub async fn order_inmarket_menus(
 
     let table_id = params.table_id.as_deref().unwrap();
 
-    if let Some(customer_id) = session.get::<uuid::Uuid>("customer_id") {
-        // customer_id가 이미 존재하는 경우 그냥 넘어감
-        println!("customer_id: {}", customer_id);
+    if let Some(_customer_id) = session.get::<uuid::Uuid>("customer_id") {
     } else {
         session.insert("customer_id", uuid::Uuid::new_v4()).unwrap();
     }

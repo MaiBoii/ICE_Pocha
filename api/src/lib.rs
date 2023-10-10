@@ -33,7 +33,7 @@ async fn start() -> anyhow::Result<()> {
     let conn = Database::connect(db_url).await.expect("Failed to connect to db");
 
     // //새로 고치는 거
-    //Migrator::refresh(&conn).await?;
+    Migrator::fresh(&conn).await?;
 
     let cors = CorsLayer::new()
         .allow_methods(Any)

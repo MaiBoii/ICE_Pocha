@@ -1,6 +1,7 @@
 use axum::{
     Router, 
     routing::{get, post}};
+    
 use crate::handlers::admin_handler;
 
 pub fn admin_routes() -> Router {
@@ -10,8 +11,9 @@ pub fn admin_routes() -> Router {
     .nest(
         "/admin",
         Router::new()
-            .route("/payed",get(admin_handler::payment_complete))
-            .route("/canceled",get(admin_handler::cancel_order))
+            .route("/show",post(admin_handler::show_orders))
+            .route("/show/payed",get(admin_handler::payment_complete))
+            .route("/show/canceled",post(admin_handler::cancel_order))
             .route("/shopclose",get(admin_handler::shop_closing))
     );
     router
