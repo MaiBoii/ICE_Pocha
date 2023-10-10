@@ -22,6 +22,7 @@ impl MigrationTrait for Migration {
                             .auto_increment()
                             .primary_key(),
                     )
+                    .col(ColumnDef::new(DateMargin::Revenue).integer().not_null())
                     .col(ColumnDef::new(DateMargin::ProfitMargin).integer().not_null())
                     .to_owned(),
             )
@@ -39,5 +40,6 @@ impl MigrationTrait for Migration {
 pub enum DateMargin {
     Table,
     DateMarginId,
+    Revenue,
     ProfitMargin,
 }

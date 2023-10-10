@@ -11,10 +11,11 @@ pub fn admin_routes() -> Router {
     .nest(
         "/admin",
         Router::new()
-            .route("/show",post(admin_handler::show_orders))
-            .route("/show/payed",get(admin_handler::payment_complete))
-            .route("/show/canceled",post(admin_handler::cancel_order))
-            .route("/shopclose",get(admin_handler::shop_closing))
+            .route("api/show",get(admin_handler::show_incomplete_orders))
+            .route("api/show/payment",get(admin_handler::payment_complete))
+            .route("api/show/cancel",post(admin_handler::cancel_order))
+            .route("api/revenue",get(admin_handler::show_revenue))
+            .route("api/shopclose",get(admin_handler::shop_closing))
     );
     router
 }

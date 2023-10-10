@@ -5,6 +5,7 @@ use sea_orm::entity::prelude::*;
 pub struct Model {
     #[sea_orm(primary_key)]
     pub date_margin_id: i32,
+    pub revenue: i32,
     pub profit_margin: i32,
 }
 
