@@ -20,8 +20,8 @@ mod utils;
 
 #[tokio::main]
 async fn start() -> anyhow::Result<()> {
-    env::set_var("RUST_LOG", "debug");
-    tracing_subscriber::fmt::init();
+    //env::set_var("RUST_LOG", "debug");
+    //tracing_subscriber::fmt::init();
 
     dotenvy::dotenv().ok();
 
@@ -37,7 +37,9 @@ async fn start() -> anyhow::Result<()> {
 
     let cors = CorsLayer::new()
         .allow_methods(Any)
-        .allow_origin(Any);
+        .allow_origin(Any)
+        .allow_headers(Any);
+
     
     let store = MemoryStore::new();
     let mut rng = rand::thread_rng();

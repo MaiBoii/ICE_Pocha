@@ -74,13 +74,10 @@ pub async fn order_inmarket_menus(
 
 /* ------------------------------- 포장 메뉴 주문 함수 ------------------------------ */
 pub async fn order_packaged_menus(
-    Query(params): Query<TableParams>,
     mut session: WritableSession,
     Extension(conn): Extension<DatabaseConnection>,
     Json(orders_detail): Json<CreateOrderModel>,
 ) -> impl IntoResponse {
-
-    let table_id = params.table_id.as_deref().unwrap();
 
     if let Some(customer_id) = session.get::<uuid::Uuid>("customer_id") {
         // customer_id가 이미 존재하는 경우 그냥 넘어감
@@ -93,7 +90,6 @@ pub async fn order_packaged_menus(
     //if same session in same table, just update order_time
     let order_models = order::ActiveModel {
         customer_id: ActiveValue::Set(session.get::<uuid::Uuid>("customer_id").unwrap().to_string()),
-        tables_id: ActiveValue::Set(table_id.to_string()),
         order_time: ActiveValue::Set(Utc::now().naive_utc()),
         ..Default::default()
     };
