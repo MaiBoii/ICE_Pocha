@@ -12,8 +12,10 @@ pub fn admin_routes() -> Router {
         "/api/admin",
         Router::new()
             .route("/show",get(admin_handler::show_incomplete_orders))
-            .route("/show/payment",get(admin_handler::payment_complete))
-            .route("/show/cancel",post(admin_handler::cancel_order))
+            .route("/show_all",get(admin_handler::show_all_incomplete_orders))
+            .route("/show/update",post(admin_handler::update_order))
+            .route("/inmarket/payment",get(admin_handler::inmarket_payment_complete))
+            .route("/packaged/payment",get(admin_handler::packaged_payment_complete))
             .route("/revenue",get(admin_handler::show_revenue))
             .route("/shopclose",get(admin_handler::shop_closing))
     );

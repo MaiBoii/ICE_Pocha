@@ -29,7 +29,6 @@ pub async fn order_inmarket_menus(
     }
 
     // order 데이터 저장
-    //if same session in same table, just update order_time
     let order_models = order::ActiveModel {
         customer_id: ActiveValue::Set(session.get::<uuid::Uuid>("customer_id").unwrap().to_string()),
         tables_id: ActiveValue::Set(table_id.to_string()),
@@ -71,7 +70,6 @@ pub async fn order_inmarket_menus(
 }
 /* -------------------------------------------------------------------------- */
 
-
 /* ------------------------------- 포장 메뉴 주문 함수 ------------------------------ */
 pub async fn order_packaged_menus(
     mut session: WritableSession,
@@ -80,17 +78,19 @@ pub async fn order_packaged_menus(
 ) -> impl IntoResponse {
 
     if let Some(customer_id) = session.get::<uuid::Uuid>("customer_id") {
-        // customer_id가 이미 존재하는 경우 그냥 넘어감
         println!("customer_id: {}", customer_id);
     } else {
         session.insert("customer_id", uuid::Uuid::new_v4()).unwrap();
     }
 
+    let table_id = "takeout";
+
     // order 데이터 저장
-    //if same session in same table, just update order_time
     let order_models = order::ActiveModel {
         customer_id: ActiveValue::Set(session.get::<uuid::Uuid>("customer_id").unwrap().to_string()),
+        tables_id: ActiveValue::Set(table_id.to_string()),
         order_time: ActiveValue::Set(Utc::now().naive_utc()),
+        //set auto increment num
         ..Default::default()
     };
 

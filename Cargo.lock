@@ -1433,6 +1433,7 @@ name = "icepocha"
 version = "0.1.0"
 dependencies = [
  "icepocha-api",
+ "once_cell",
 ]
 
 [[package]]
@@ -1446,14 +1447,17 @@ dependencies = [
  "chrono",
  "dotenvy",
  "entity",
+ "futures",
  "lazy_static",
  "migration",
+ "once_cell",
  "rand",
  "sea-orm",
  "sea-orm-migration",
  "serde",
  "serde_json",
  "tokio",
+ "tokio-stream",
  "tower",
  "tower-cookies",
  "tower-http",

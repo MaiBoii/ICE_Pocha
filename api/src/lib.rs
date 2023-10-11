@@ -1,5 +1,5 @@
 use axum::{
-    Router, Server,Extension
+    Router, Server,Extension,
 };
 use axum_sessions::{
     async_session::MemoryStore,
@@ -7,21 +7,39 @@ use axum_sessions::{
 };
 use migration::Migrator;
 use sea_orm::*;
+use serde::Serialize;
 use tower_http::cors::{CorsLayer, Any};
 use std::str::FromStr;
 use std::{env, net::SocketAddr};
 use sea_orm_migration::prelude::*;
 use rand::Rng;
 
+use std::sync::{Arc, Mutex};
+use tokio::sync::mpsc;
+
+#[derive(Clone)]
+pub struct AppState {
+    pub clients: Arc<Mutex<Vec<mpsc::Sender<OrderNotification>>>>,
+}
+
+// 주문 알림 데이터 구조체
+#[derive(Serialize)]
+pub struct OrderNotification {
+    pub message: String,
+}
+
 mod models;
 mod routes;
 mod handlers;
 mod utils;
 
+
 #[tokio::main]
 async fn start() -> anyhow::Result<()> {
     //env::set_var("RUST_LOG", "debug");
     //tracing_subscriber::fmt::init();
+
+    
 
     dotenvy::dotenv().ok();
 
@@ -37,9 +55,8 @@ async fn start() -> anyhow::Result<()> {
 
     let cors = CorsLayer::new()
         .allow_methods(Any)
-        .allow_origin(Any)
-        .allow_headers(Any);
-
+        .allow_headers(Any)
+        .allow_origin(Any);
     
     let store = MemoryStore::new();
     let mut rng = rand::thread_rng();
@@ -67,6 +84,7 @@ async fn start() -> anyhow::Result<()> {
 }
 
 pub fn main() {
+
     let result = start();
 
     if let Some(err) = result.err() {

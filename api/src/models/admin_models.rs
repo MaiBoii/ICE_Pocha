@@ -22,6 +22,15 @@ pub struct IncompleteOrderDetail {
     pub name: String,
     pub quantity: i32,
     pub price: i32,
+    pub order_detail_id: i32,
+}
+
+#[derive(Debug,Serialize, Deserialize)]
+pub struct AllIncompleteOrderDetail {
+    pub name: String,
+    pub quantity: i32,
+    pub price: i32,
+    pub table_id: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -34,4 +43,10 @@ pub struct RevenueModel {
     pub date: i32,
     pub revenue: i32,
     pub margin: i32,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct UpdateOrderModel {
+    pub order_detail_id: i32,
+    pub quantity: i32,
 }
