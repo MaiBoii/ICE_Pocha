@@ -14,13 +14,6 @@ use std::{env, net::SocketAddr};
 use sea_orm_migration::prelude::*;
 use rand::Rng;
 
-use std::sync::{Arc, Mutex};
-use tokio::sync::mpsc;
-
-#[derive(Clone)]
-pub struct AppState {
-    pub clients: Arc<Mutex<Vec<mpsc::Sender<OrderNotification>>>>,
-}
 
 // 주문 알림 데이터 구조체
 #[derive(Serialize)]
@@ -39,6 +32,7 @@ async fn start() -> anyhow::Result<()> {
     //env::set_var("RUST_LOG", "debug");
     //tracing_subscriber::fmt::init();
 
+    //static i32 var
     
 
     dotenvy::dotenv().ok();

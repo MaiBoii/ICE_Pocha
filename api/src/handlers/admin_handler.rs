@@ -5,7 +5,7 @@ use axum_sessions::extractors::WritableSession;
 use entity::{order, order_detail, date_margin, inmarket_menu, packaged_menu};
 use sea_orm::{DatabaseConnection, ActiveValue, ColumnTrait, EntityTrait, QueryFilter, ActiveModelTrait, Set, QueryOrder};
 
-use crate::models::{admin_models::{LoginPayload, TableParams, RevenueModel, IncompleteOrderDetail, AllIncompleteOrderDetail, UpdateOrderModel}, order_models::OrderItemModel};
+use crate::models::admin_models::{LoginPayload, TableParams, RevenueModel, IncompleteOrderDetail, AllIncompleteOrderDetail, UpdateOrderModel};
 
 /* --------------------------------- 로그인 핸들러 -------------------------------- */  
 
@@ -108,7 +108,7 @@ pub async fn show_incomplete_orders(
 /* -------------------------------------------------------------------------- */
 
 
-/* ------------- 매장/포장 미완료 주문들 모음 ------------- */
+/* ------------------------- 매장/포장 미완료 주문들 모음 ------------------------- */
 pub async fn show_all_incomplete_orders(
     Extension(conn): Extension<DatabaseConnection>,
 ) -> impl IntoResponse{
@@ -215,7 +215,7 @@ pub async fn update_order(
     let _ = order_detail_model.update(&conn).await;
 
 
-    (StatusCode::ACCEPTED, "주문이 수정되었습니다.")
+    (StatusCode::OK, "주문이 수정되었습니다.")
 }
 
 
@@ -273,17 +273,16 @@ pub async fn inmarket_payment_complete(
             //Remove the payed cutomer's session
             session.remove("customer_id");
 
-            (StatusCode::ACCEPTED, "결제 완료 및 고객 세션이 만료되었습니다.")
+            (StatusCode::OK, "결제 완료 및 고객 세션이 만료되었습니다.")
         }
 /* -------------------------------------------------------------------------- */
 
 
-/* -------------------------------포장 결제 완료 함수 ------------------------------ */
+/* -------------------------------포장 결제 완료 함수 (진행중) ------------------------------ */
 pub async fn packaged_payment_complete(
-    Query(params): Query<TableParams>,
     Extension(conn): Extension<DatabaseConnection>,
 ) -> impl IntoResponse {
-    
+
             let order_detail_id = order_detail::Entity::find()
                 .filter(order_detail::Column::Completed.contains("0"))
                 .filter(order_detail::Column::PackagedMenuId.is_not_null())
@@ -305,7 +304,7 @@ pub async fn packaged_payment_complete(
                 order_detail_model.update(&conn).await.unwrap();
             }
 
-            (StatusCode::ACCEPTED, "결제 완료 및 고객 세션이 만료되었습니다.")
+            (StatusCode::OK, "결제 완료 및 고객 세션이 만료되었습니다.")
 }
 
 /* -------------------------------------------------------------------------- */
@@ -346,7 +345,7 @@ pub async fn shop_closing(
 
         let _ = todays_margin.insert(&conn).await;
 
-        (StatusCode::ACCEPTED, "일자가 변경되었습니다.")
+        (StatusCode::OK, "일자가 변경되었습니다.")
 }
 
 /* -------------------------------------------------------------------------- */
@@ -365,6 +364,6 @@ pub async fn show_revenue(
             margin: item.profit_margin,
         }).collect();
 
-        (StatusCode::ACCEPTED, Json(date_revenue))
+        (StatusCode::OK, Json(date_revenue))
 }
 /* -------------------------------------------------------------------------- */
