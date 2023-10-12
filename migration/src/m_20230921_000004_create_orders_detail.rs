@@ -27,6 +27,7 @@ impl MigrationTrait for Migration {
                             .primary_key(),
                     )
                     .col(ColumnDef::new(OrderDetail::OrderId).integer().not_null())
+                    .col(ColumnDef::new(OrderDetail::CustomerId).string().not_null())
                     .col(ColumnDef::new(OrderDetail::PackagedMenuId).integer())
                     .col(ColumnDef::new(OrderDetail::InmarketMenuId).integer())
                     .col(ColumnDef::new(OrderDetail::Quantity).integer().not_null())
@@ -68,6 +69,7 @@ pub enum OrderDetail {
     Table,
     OrderDetailId,
     OrderId,
+    CustomerId,
     PackagedMenuId,
     InmarketMenuId,
     Quantity,

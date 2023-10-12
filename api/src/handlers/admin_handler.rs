@@ -1,11 +1,16 @@
-use std::env;
+use std::convert::Infallible;
+use std::{env, net::TcpListener};
 
+use axum::body::Body;
+use axum::response::Response;
+use axum::http::Request;
 use axum::{Json, http::StatusCode, response::IntoResponse, Extension, extract::Query};
 use axum_sessions::extractors::WritableSession;
 use entity::{order, order_detail, date_margin, inmarket_menu, packaged_menu};
 use sea_orm::{DatabaseConnection, ActiveValue, ColumnTrait, EntityTrait, QueryFilter, ActiveModelTrait, Set, QueryOrder};
 
-use crate::models::admin_models::{LoginPayload, TableParams, RevenueModel, IncompleteOrderDetail, AllIncompleteOrderDetail, UpdateOrderModel};
+use crate::models::admin_models::{LoginPayload, TableParams, RevenueModel, IncompleteOrderDetail, AllIncompleteOrderDetail, UpdateOrderModel, CutomerIdParams};
+
 
 /* --------------------------------- 로그인 핸들러 -------------------------------- */  
 
@@ -149,6 +154,12 @@ pub async fn show_all_incomplete_orders(
                     .unwrap()
                     .unwrap()
                     .tables_id,
+                customer_id: order::Entity::find_by_id(order_detail.order_id)
+                    .one(&conn)
+                    .await
+                    .unwrap()
+                    .unwrap()
+                    .customer_id,
             });
         } 
         else if order_detail.completed == 0 && order_detail.packaged_menu_id.is_some() {
@@ -169,6 +180,12 @@ pub async fn show_all_incomplete_orders(
                     .unwrap()
                     .unwrap()
                     .tables_id,
+                customer_id: order::Entity::find_by_id(order_detail.order_id)
+                    .one(&conn)
+                    .await
+                    .unwrap()
+                    .unwrap()
+                    .customer_id,
             });
         }
         else {
@@ -182,6 +199,12 @@ pub async fn show_all_incomplete_orders(
                     .unwrap()
                     .unwrap()
                     .tables_id,
+                customer_id: order::Entity::find_by_id(order_detail.order_id)
+                    .one(&conn)
+                    .await
+                    .unwrap()
+                    .unwrap()
+                    .customer_id,
             });
             
         }
@@ -220,6 +243,7 @@ pub async fn update_order(
 
 
 /* -------------------------------매장 결제 완료 함수 ------------------------------ */
+
 pub async fn inmarket_payment_complete(
     Query(params): Query<TableParams>,
     mut session: WritableSession,
@@ -253,6 +277,8 @@ pub async fn inmarket_payment_complete(
             for id in order_id {
                 let order_detail_id = order_detail::Entity::find()
                     .filter(order_detail::Column::OrderId.contains(id.to_string()))
+                    .filter(order_detail::Column::Completed.contains("0"))
+                    .filter(order_detail::Column::InmarketMenuId.is_not_null())
                     .all(&conn)
                     .await
                     .unwrap()
@@ -277,15 +303,18 @@ pub async fn inmarket_payment_complete(
         }
 /* -------------------------------------------------------------------------- */
 
-
 /* -------------------------------포장 결제 완료 함수 (진행중) ------------------------------ */
 pub async fn packaged_payment_complete(
+    Query(params): Query<CutomerIdParams>,
     Extension(conn): Extension<DatabaseConnection>,
-) -> impl IntoResponse {
+) -> Result<Response<Body>, Infallible>  {
 
-            let order_detail_id = order_detail::Entity::find()
+        let customer_id = params.customer_id.as_deref().unwrap();
+
+        let order_detail_id = order_detail::Entity::find()
                 .filter(order_detail::Column::Completed.contains("0"))
                 .filter(order_detail::Column::PackagedMenuId.is_not_null())
+                .filter(order_detail::Column::CustomerId.contains(customer_id))
                 .all(&conn)
                 .await
                 .unwrap()
@@ -304,8 +333,11 @@ pub async fn packaged_payment_complete(
                 order_detail_model.update(&conn).await.unwrap();
             }
 
-            (StatusCode::OK, "결제 완료 및 고객 세션이 만료되었습니다.")
+            let response = Response::new(Body::from("Payment complete"));
+            Ok(response)
 }
+
+
 
 /* -------------------------------------------------------------------------- */
 

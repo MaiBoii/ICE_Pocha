@@ -44,5 +44,4 @@ pub enum Order {
     CustomerId,
     TablesId,
     OrderTime,
-    PackageNum,
 }

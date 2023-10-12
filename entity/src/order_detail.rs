@@ -6,6 +6,7 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub order_detail_id: i32,
     pub order_id: i32,
+    pub customer_id: String,
     pub packaged_menu_id: Option<i32>,
     pub inmarket_menu_id: Option<i32>,
     pub quantity: i32,

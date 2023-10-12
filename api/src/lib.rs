@@ -1,5 +1,5 @@
 use axum::{
-    Router, Server,Extension,
+    Router,Extension, Server,
 };
 use axum_sessions::{
     async_session::MemoryStore,
@@ -7,19 +7,11 @@ use axum_sessions::{
 };
 use migration::Migrator;
 use sea_orm::*;
-use serde::Serialize;
 use tower_http::cors::{CorsLayer, Any};
 use std::str::FromStr;
 use std::{env, net::SocketAddr};
 use sea_orm_migration::prelude::*;
 use rand::Rng;
-
-
-// 주문 알림 데이터 구조체
-#[derive(Serialize)]
-pub struct OrderNotification {
-    pub message: String,
-}
 
 mod models;
 mod routes;
@@ -29,12 +21,10 @@ mod utils;
 
 #[tokio::main]
 async fn start() -> anyhow::Result<()> {
+
     //env::set_var("RUST_LOG", "debug");
     //tracing_subscriber::fmt::init();
-
-    //static i32 var
     
-
     dotenvy::dotenv().ok();
 
     let db_url = (*utils::constants::DATABASE_URL).clone();
@@ -61,7 +51,7 @@ async fn start() -> anyhow::Result<()> {
     }
 
     let session_layer = SessionLayer::new(store, &secret).with_secure(false);
-    
+
     let app: Router = Router::new()
     .merge(routes::menu_route::menu_routes())
     .merge(routes::order_route::order_routes())
@@ -78,10 +68,10 @@ async fn start() -> anyhow::Result<()> {
 }
 
 pub fn main() {
-
     let result = start();
 
     if let Some(err) = result.err() {
         println!("Error: {err}");
     }
+    
 }

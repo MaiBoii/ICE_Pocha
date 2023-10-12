@@ -31,11 +31,17 @@ pub struct AllIncompleteOrderDetail {
     pub quantity: i32,
     pub price: i32,
     pub table_id: String,
+    pub customer_id: String,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct TableParams{
     pub table_id: Option<String>
+}
+
+#[derive(Debug, Deserialize)]
+pub struct CutomerIdParams{
+    pub customer_id: Option<String>
 }
 
 #[derive(Serialize, Deserialize)]
